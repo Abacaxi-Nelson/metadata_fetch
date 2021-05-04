@@ -8,14 +8,14 @@ import 'base_parser.dart';
 /// Takes a [http.document] and parses [Metadata] from `json-ld` data in `<script>`
 class JsonLdParser with BaseMetadataParser {
   /// The [document] to be parse
-  Document document;
+  Document? document;
   dynamic _jsonData;
 
   JsonLdParser(this.document) {
     _jsonData = _parseToJson(document);
   }
 
-  dynamic _parseToJson(Document document) {
+  dynamic _parseToJson(Document? document) {
     final data = document?.head
         ?.querySelector("script[type='application/ld+json']")
         ?.innerHtml;
@@ -28,7 +28,7 @@ class JsonLdParser with BaseMetadataParser {
 
   /// Get the [Metadata.title] from the [<title>] tag
   @override
-  String get title {
+  String? get title {
     final data = _jsonData;
     if (data is List) {
       return data?.first['name'];
@@ -40,7 +40,7 @@ class JsonLdParser with BaseMetadataParser {
 
   /// Get the [Metadata.description] from the <meta name="description" content=""> tag
   @override
-  String get description {
+  String? get description {
     final data = _jsonData;
     if (data is List) {
       return data?.first['description'] ?? data?.first['headline'];
@@ -52,7 +52,7 @@ class JsonLdParser with BaseMetadataParser {
 
   /// Get the [Metadata.image] from the first <img> tag in the body;s
   @override
-  String get image {
+  String? get image {
     final data = _jsonData;
     if (data is List && data.isNotEmpty) {
       return _imageResultToString(data?.first['logo'] ?? data?.first['image']);
@@ -64,7 +64,7 @@ class JsonLdParser with BaseMetadataParser {
     return null;
   }
 
-  String _imageResultToString(dynamic result) {
+  String? _imageResultToString(dynamic result) {
     if (result is List && result.isNotEmpty) {
       result = result.first;
     }
@@ -78,7 +78,7 @@ class JsonLdParser with BaseMetadataParser {
 
   /// Get the document request URL from Document's [HttpRequestData] extension.
   @override
-  String get url => document?.requestUrl;
+  String? get url => document?.requestUrl;
 
   @override
   String toString() => parse().toString();
